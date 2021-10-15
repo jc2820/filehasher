@@ -16,3 +16,6 @@
 
 # Output of Fresh build runner
 /tmp
+
+# Executable file
+fh
