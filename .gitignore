@@ -17,5 +17,7 @@
 # Output of Fresh build runner
 /tmp
 
-# Executable file
-fh
+# App specific files
+fc
+default
+default.txt
