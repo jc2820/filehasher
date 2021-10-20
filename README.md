@@ -14,7 +14,7 @@ or `./filecrypt -d`
 ## Flags
 ### General
 * `-f` Specify the filepath to the file you want to operate on - default is ./cryptfile.txt.
-* `-p` Specify a pass phrase to encrypt or decrypt files with **Don't lose this!** Default is 'secret'.
+* `-p` Specify a pass phrase to encrypt or decrypt files with. **Don't lose this!** Default is 'secret'.
 * `-r` Read mode. Will print the file's contents before and after job operations. Can be used alongside other modes.
 
 ### Job operations
