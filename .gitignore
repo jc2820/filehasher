@@ -18,6 +18,4 @@
 /tmp
 
 # App specific files
-fc
-default
-default.txt
+filecrypt
