@@ -23,8 +23,23 @@ Choose only one of these jobs per command.
 * `-d` Decrypt Mode. Attempts to decrypt the file given to `-f` with the key given to `-p` or uses default values.
 * `-a` Add Mode. Currently takes encrypted files only. Decrypts the file, adds any string arguments given to the command each as a single new line then re-encrypts the file all with the key provided.
 
-## Arguments
-In add mode any string argument given to the command after flags and flag arguments will be appended each as a new line to the decrypted file. See example above.
+## Arguments / Add Mode
+In Add Mode any string argument given to the command after flags and flag arguments will be appended each as a new line to the decrypted file. e.g.  
+
+```
+...
+old file contents
+```
+
+`./filecrypt -a new lines "to add"`
+
+```
+...
+old file contents
+new
+lines
+to add
+```
 
 Args will be ignored in other modes.
 
