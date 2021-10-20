@@ -12,15 +12,15 @@ or `./filecrypt -d`
 
 ## Flags
 ### General
-`-f` Specify the filepath to the file you want to operate on - default is ./cryptfile.txt.
-`-p` Specify a pass phrase to encrypt or decrypt files with **Don't lose this!** Default is 'secret'.
-`-r` Read mode. Will print the file's contents before and after job operations. Can be used alongside other modes.
+* `-f` Specify the filepath to the file you want to operate on - default is ./cryptfile.txt.
+* `-p` Specify a pass phrase to encrypt or decrypt files with **Don't lose this!** Default is 'secret'.
+* `-r` Read mode. Will print the file's contents before and after job operations. Can be used alongside other modes.
 
 ### Job operations
 Choose only one of these jobs per command.
-`e` Encrypt mode. Encrypts the file given to `f` with the key provided to `-p` or uses default values.
-`d` Decrypt Mode. Attempts to decrypt the file given to `f` with the key given to `p` or uses default values.
-`a` Add Mode. Currently takes encrypted files only. Decrypts the file, adds any string arguments given to the command each as a single new line then re-encrypts the file all with the key provided.
+* `e` Encrypt mode. Encrypts the file given to `f` with the key provided to `-p` or uses default values.
+* `d` Decrypt Mode. Attempts to decrypt the file given to `f` with the key given to `p` or uses default values.
+* `a` Add Mode. Currently takes encrypted files only. Decrypts the file, adds any string arguments given to the command each as a single new line then re-encrypts the file all with the key provided.
 
 ## Arguments
 In add mode any string argument given to the command after flags and flag arguments will be appended each as a new line to the decrypted file. See example above.
