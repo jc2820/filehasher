@@ -30,6 +30,7 @@ func main() {
 		encrypt(*filePath, *passPhrase)
 	case *decryptMode && !*encryptMode && !*addMode:
 		fmt.Println("Let's decrypt!")
+		decrypt(*filePath, *passPhrase)
 	case *addMode && !*encryptMode && !*decryptMode:
 		fmt.Println("Add Lines")
 	default:
@@ -71,4 +72,42 @@ func encrypt(file, secret string) {
 	}
 
 	fmt.Println("File encrypted!")
+}
+
+func decrypt(file, secret string) {
+	key32 := sha256.Sum256([]byte(secret))
+	key := key32[:]
+
+	ciphertext, err := ioutil.ReadFile(file)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	nonceSize := aesgcm.NonceSize()
+	if len(ciphertext) < nonceSize {
+		fmt.Println(err)
+	}
+
+	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
+
+	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Printf("%s\n", plaintext)
+	err = ioutil.WriteFile(file, []byte(plaintext), 0777)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
