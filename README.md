@@ -31,7 +31,7 @@ myfile.txt (before)
 ...
 old file contents
 ```
-
+run FileCrypt...
 `./filecrypt -f ./myfile.txt -a new lines "to add"`
 
 myfile.txt (after)
