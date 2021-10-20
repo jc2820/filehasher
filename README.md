@@ -26,13 +26,15 @@ Choose only one of these jobs per command.
 ## Arguments / Add Mode
 In Add Mode any string argument given to the command after flags and flag arguments will be appended each as a new line to the decrypted file. e.g.  
 
+myfile.txt (before)
 ```
 ...
 old file contents
 ```
 
-`./filecrypt -a new lines "to add"`
+`./filecrypt -f ./myfile.txt -a new lines "to add"`
 
+myfile.txt (after)
 ```
 ...
 old file contents
