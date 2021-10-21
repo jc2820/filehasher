@@ -1,5 +1,5 @@
 # FileCrypt
-A command line program in Go that performs basic encryption and editing operations on files.
+A command line program in Go that performs basic encryption and editing operations on files.  
 Can either encrypt or decrypt a file with a given key, or perform an all in one decrypt-append lines-encrypt with the key and some arguments.
 
 ## Installation (Go PATH)
