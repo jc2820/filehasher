@@ -3,14 +3,20 @@ A command line program in Go that performs basic encryption and editing operatio
 Can either encrypt or decrypt a file with a given key, or perform an all in one decrypt-append lines-encrypt with the key and some arguments.
 A default txt file and pass key are provided.
 
-## Setup
+## Installation (Go PATH)
 1. You'll need a copy of Go (ideally v1.17+) on your machine.
+2. run `go get github.com/jc2820/filecrypt` to build the latest binary in your Go bin.
+3. Use `filecrypt <flags> <args>` to use the program.
+
+e.g. `filecrypt -f ./myfile.txt -p mypassword -r -a "line one" linetwo`
+or `filecrypt -d`
+
+## Build/edit and run
+1. You need Go (ideally v1.17+).
 2. Clone this repo and navigate to its root folder
 3. Run `go build filecrypt.go` to create the binary for your OS.
 4. Use `./filecrypt <flags> <args>` to use the program.
-
-e.g. `./filecrypt -f ./myfile.txt -p mypassword -r -a "line one" linetwo`
-or `./filecrypt -d`
+5. You can move the binary file to somewhere in your PATH so you don't have to call it relatively.
 
 ## Flags
 ### General
@@ -35,7 +41,7 @@ myfile.txt (before)
 old file contents
 ```
 run FileCrypt...
-`./filecrypt -f ./myfile.txt -a new lines "to add"`
+`filecrypt -f ./myfile.txt -a new lines "to add"`
 
 myfile.txt (after)
 ```
