@@ -1,6 +1,6 @@
 # FileCrypt
-A command line program in Go that performs basic encryption and editing operations on files.  
-Can either encrypt or decrypt a file with a given key, or perform an all in one decrypt-append lines-encrypt with the key and some arguments.  
+A command line program in Go that performs basic encryption and editing operations on files.
+Can either encrypt or decrypt a file with a given key, or perform an all in one decrypt-append lines-encrypt with the key and some arguments.
 
 ## Setup
 1. You'll need a copy of Go (ideally v1.17+) on your machine.
@@ -8,7 +8,7 @@ Can either encrypt or decrypt a file with a given key, or perform an all in one 
 3. Run `go build filecrypt.go` to create the binary.
 4. Use `./filecrypt <flags> <args>` to use the program.
 
-e.g. `./filecrypt -f ./myfile.txt -p mypassword -r -a "line one" linetwo`  
+e.g. `./filecrypt -f ./myfile.txt -p mypassword -r -a "line one" linetwo`
 or `./filecrypt -d`
 
 ## Flags
@@ -19,12 +19,12 @@ or `./filecrypt -d`
 
 ### Job operations
 Choose only one of these jobs per command.
-* `-e` Encrypt mode. Encrypts the file given to `-f` with the key provided to `-p` or uses default values.
-* `-d` Decrypt Mode. Attempts to decrypt the file given to `-f` with the key given to `-p` or uses default values.
+* `-e` Encrypt mode. Encrypts the file given to `-f` with the key provided to `-k` or uses default values.
+* `-d` Decrypt Mode. Attempts to decrypt the file given to `-f` with the key given to `-k` or uses default values.
 * `-a` Add Mode. Currently takes encrypted files only. Decrypts the file, adds any string arguments given to the command each as a single new line then re-encrypts the file all with the key provided.
 
 ## Arguments / Add Mode
-In Add Mode any string argument given to the command after flags and flag arguments will be appended each as a new line to the decrypted file. e.g.  
+In Add Mode any string argument given to the command after flags and flag arguments will be appended each as a new line to the decrypted file. e.g.
 
 myfile.txt (before)
 ```
@@ -50,10 +50,11 @@ Args will be ignored in other modes.
 - You can of course always use the default pass key, but that wouldn't be very secure. There's no way to decrypt a file without the proper key so **Please remember it/ note it down** - or think carefully before encrypting unique and vital information.
 - Recursively running this programme on a system's folders could be very bad.
 - There's no checks on unsuccessful decryption attempts so a patient person could brute force your file. Usual password complexity advice applies.
-- Decrypting an unencrypted file currently has an odd behaviour that seems to wipe files. It will be fixed, but careful for now.
+- Attempting add mode on an unencrypted file gives the same error as providing an incorrect decryption key. If you're having cipher message authentication errors in add mode check your file or use read mode - it might be open to edit normally. If not check the password you're giving.
 
 ## Improvements to make
-- better messaging (progress, errors, manual)
-- verbose/silent modes - To avoid printing sensitive data if necessary
-- Packaging for cross-platform dl
-- A custom complex lock/unlock script that can be stored separately.
+- better messaging (job progress, man page).
+- verbose/silent modes - To avoid printing sensitive data if necessary.
+- Fix the above add mode error quirk.
+- Packaging for cross-platform dl.
+- Maybe even a custom complex lock/unlock script that can be stored separately.

@@ -25,14 +25,23 @@ func main() {
 	read(*filePath, "Read before:", *readMode)
 	switch {
 	case *encryptMode && !*decryptMode && !*addMode:
-		fmt.Println("Let's encrpyt...")
-		encrypt(*filePath, *passPhrase)
+		fmt.Println("Let's encrypt...")
+		err := encrypt(*filePath, *passPhrase)
+		if err != nil {
+			fmt.Println(err)
+		}
 	case *decryptMode && !*encryptMode && !*addMode:
 		fmt.Println("Let's decrypt...")
-		decrypt(*filePath, *passPhrase)
+		err := decrypt(*filePath, *passPhrase)
+		if err != nil {
+			fmt.Println(err)
+		}
 	case *addMode && !*encryptMode && !*decryptMode:
-		fmt.Println("Adding Lines...")
-		add(*filePath, *passPhrase, flag.Args())
+		fmt.Println("Add Mode...")
+		err := add(*filePath, *passPhrase, flag.Args())
+		if err != nil {
+			fmt.Println(err)
+		}
 	default:
 		fmt.Println("Please add a single job flag (-e, -d or -a). See help -h for more info.")
 	}
@@ -40,21 +49,22 @@ func main() {
 
 }
 
-func read(file, location string, readMode bool) {
+func read(file, location string, readMode bool) error {
 	if readMode {
 		data, err := ioutil.ReadFile(file)
 		if err != nil {
-			fmt.Println(err)
+			return fmt.Errorf("Could not read this file: %w", err)
 		}
 		fmt.Println(location)
 		fmt.Printf("%s\n", data)
 	}
+	return nil
 }
 
-func encrypt(file, secret string) {
+func encrypt(file, secret string) error {
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("Could not read this file: %w", err)
 	}
 	plaintext := []byte(data)
 
@@ -63,70 +73,85 @@ func encrypt(file, secret string) {
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("Error: %w", err)
 	}
 
 	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("Error: %w", err)
 	}
 
 	nonce := make([]byte, aesgcm.NonceSize())
 	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("Error: %w", err)
 	}
 
 	ciphertext := aesgcm.Seal(nonce, nonce, plaintext, nil)
 
 	err = ioutil.WriteFile(file, []byte(ciphertext), 0777)
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("Could not write to file: %w", err)
 	}
 
 	fmt.Println("File encrypted!")
+	return nil
 }
 
-func decrypt(file, secret string) {
+func decrypt(file, secret string) error {
 	key32 := sha256.Sum256([]byte(secret))
 	key := key32[:]
 
 	ciphertext, err := ioutil.ReadFile(file)
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("Could not read file: %w", err)
 	}
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("Error: %w", err)
 	}
 
 	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("Error: %w", err)
 	}
 
 	nonceSize := aesgcm.NonceSize()
 	if len(ciphertext) < nonceSize {
-		fmt.Println(err)
+		return fmt.Errorf("Error: %w", err)
 	}
 
 	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
 
 	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("Error: %w", err)
 	}
 
 	err = ioutil.WriteFile(file, []byte(plaintext), 0777)
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("Could not write to file: %w", err)
 	}
+
+	fmt.Println("File decrypted!")
+
+	return nil
 }
 
-func add(file, secret string, args []string) {
-	decrypt(file, secret)
+func add(file, secret string, args []string) error {
+	err := decrypt(file, secret)
+	if err != nil {
+		return fmt.Errorf("Error in decryption phase: %w", err)
+	}
 	for _, v := range args {
 		fmt.Printf("Adding line: %s\n", v)
 	}
-	encrypt(file, secret)
+	err = encrypt(file, secret)
+	if err != nil {
+		return fmt.Errorf("Error in re-encryption phase: %w", err)
+	}
+
+	fmt.Println("Update complete!")
+
+	return nil
 }
