@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	filePath := flag.String("f", "./cryptfile.txt", "The filepath to the file you want to operate on.")
+	filePath := flag.String("f", "", "The filepath to the file you want to operate on.")
 	passPhrase := flag.String("k", "secret", "A key to encrpyt or decrypt your file with...remember this!")
 	encryptMode := flag.Bool("e", false, "Encrypt Mode: Encrypt the specified file with the key provided.")
 	decryptMode := flag.Bool("d", false, "Decrypt Mode: Attempt to decrypt the file with the key provided.")
@@ -20,7 +20,12 @@ func main() {
 	readMode := flag.Bool("r", false, "Read Mode: Will read the file given before and after other operations.")
 	flag.Parse()
 
-	fmt.Printf("Working on file at %v\n", *filePath)
+	if *filePath != "" {
+		fmt.Printf("Working on file at %v\n", *filePath)
+	} else {
+		fmt.Println("Please specify a file to work with.")
+		return
+	}
 
 	read(*filePath, "Read before:", *readMode)
 	switch {
