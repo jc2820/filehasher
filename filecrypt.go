@@ -33,28 +33,34 @@ func main() {
 		if err := encrypt(*filePath, *passPhrase); err != nil {
 			fmt.Println(err)
 		}
-		if err := read(*filePath, *readMode); err != nil {
-			fmt.Println(err)
+		if *readMode {
+			if err := read(*filePath); err != nil {
+				fmt.Println(err)
+			}
 		}
 	case *decryptMode && !*encryptMode && !*addMode:
 		fmt.Println("Let's decrypt...")
 		if err := decrypt(*filePath, *passPhrase); err != nil {
 			fmt.Println(err)
 		}
-		if err := read(*filePath, *readMode); err != nil {
-			fmt.Println(err)
+		if *readMode {
+			if err := read(*filePath); err != nil {
+				fmt.Println(err)
+			}
 		}
 	case *addMode && !*encryptMode && !*decryptMode:
 		fmt.Println("Add Mode...")
 		if err := add(*filePath, *passPhrase, flag.Args()); err != nil {
 			fmt.Println(err)
 		}
-		if err := read(*filePath, *readMode); err != nil {
-			fmt.Println(err)
+		if *readMode {
+			if err := read(*filePath); err != nil {
+				fmt.Println(err)
+			}
 		}
 	default:
 		if *readMode {
-			if err := read(*filePath, *readMode); err != nil {
+			if err := read(*filePath); err != nil {
 				fmt.Println(err)
 			}
 		} else {
@@ -63,14 +69,12 @@ func main() {
 	}
 }
 
-func read(file string, readMode bool) error {
-	if readMode {
-		data, err := os.ReadFile(file)
-		if err != nil {
-			return fmt.Errorf("Could not read this file: %w", err)
-		}
-		fmt.Printf("File contents...\n---\n%s\n", data)
+func read(file string) error {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return fmt.Errorf("Could not read this file: %w", err)
 	}
+	fmt.Printf("File contents...\n---\n%s\n", data)
 	return nil
 }
 
