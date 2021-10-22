@@ -8,7 +8,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 )
 
@@ -145,15 +144,32 @@ func decrypt(file, secret string) error {
 }
 
 func add(file, secret string, args []string) error {
-	err := decrypt(file, secret)
-	if err != nil {
+	if err := decrypt(file, secret); err != nil {
 		return fmt.Errorf("Error in decryption phase: %w", err)
 	}
+
+	f, err := os.OpenFile(file, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return fmt.Errorf("Could not open your file to append to: %w", err)
+	}
+
 	for _, v := range args {
 		fmt.Printf("Adding line: %s\n", v)
+		if _, err := f.Write([]byte(v)); err != nil {
+			f.Close()
+			return fmt.Errorf("Failed writing line %s: %w", v, err)
+		}
+		if _, err := f.Write([]byte("\n")); err != nil {
+			f.Close()
+			return fmt.Errorf("Failed to write new line: %w", err)
+		}
 	}
-	err = encrypt(file, secret)
-	if err != nil {
+
+	if err := f.Close(); err != nil {
+		return fmt.Errorf("Failed closing file %w", err)
+	}
+
+	if err := encrypt(file, secret); err != nil {
 		return fmt.Errorf("Error in re-encryption phase: %w", err)
 	}
 
