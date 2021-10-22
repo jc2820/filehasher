@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os"
 )
 
 func main() {
@@ -56,7 +57,7 @@ func main() {
 
 func read(file, location string, readMode bool) error {
 	if readMode {
-		data, err := ioutil.ReadFile(file)
+		data, err := os.ReadFile(file)
 		if err != nil {
 			return fmt.Errorf("Could not read this file: %w", err)
 		}
@@ -67,7 +68,7 @@ func read(file, location string, readMode bool) error {
 }
 
 func encrypt(file, secret string) error {
-	data, err := ioutil.ReadFile(file)
+	data, err := os.ReadFile(file)
 	if err != nil {
 		return fmt.Errorf("Could not read this file: %w", err)
 	}
@@ -93,7 +94,7 @@ func encrypt(file, secret string) error {
 
 	ciphertext := aesgcm.Seal(nonce, nonce, plaintext, nil)
 
-	err = ioutil.WriteFile(file, []byte(ciphertext), 0777)
+	err = os.WriteFile(file, []byte(ciphertext), 0644)
 	if err != nil {
 		return fmt.Errorf("Could not write to file: %w", err)
 	}
@@ -106,7 +107,7 @@ func decrypt(file, secret string) error {
 	key32 := sha256.Sum256([]byte(secret))
 	key := key32[:]
 
-	ciphertext, err := ioutil.ReadFile(file)
+	ciphertext, err := os.ReadFile(file)
 	if err != nil {
 		return fmt.Errorf("Could not read file: %w", err)
 	}
@@ -133,7 +134,7 @@ func decrypt(file, secret string) error {
 		return fmt.Errorf("Error: %w", err)
 	}
 
-	err = ioutil.WriteFile(file, []byte(plaintext), 0777)
+	err = os.WriteFile(file, []byte(plaintext), 0644)
 	if err != nil {
 		return fmt.Errorf("Could not write to file: %w", err)
 	}
