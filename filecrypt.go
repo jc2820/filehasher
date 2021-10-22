@@ -13,11 +13,11 @@ import (
 
 func main() {
 	filePath := flag.String("f", "", "The filepath to the file you want to operate on.")
-	passPhrase := flag.String("k", "secret", "A key to encrpyt or decrypt your file with...remember this!")
+	passPhrase := flag.String("k", "secret", "A key to encrypt or decrypt your file with...remember this!")
 	encryptMode := flag.Bool("e", false, "Encrypt Mode: Encrypt the specified file with the key provided.")
 	decryptMode := flag.Bool("d", false, "Decrypt Mode: Attempt to decrypt the file with the key provided.")
 	addMode := flag.Bool("a", false, "Add Mode: Decrypt and append lines given as tail arguments to the file, then reencrypt with the key provided.")
-	readMode := flag.Bool("r", false, "Read Mode: Will read the file given after other operations.")
+	readMode := flag.Bool("r", false, "Read Mode: Will read the file given after other operations. Can be used without other jobs to simply print the file.")
 	flag.Parse()
 
 	if *filePath != "" {
