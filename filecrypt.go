@@ -17,7 +17,7 @@ func main() {
 	encryptMode := flag.Bool("e", false, "Encrypt Mode: Encrypt the specified file with the key provided.")
 	decryptMode := flag.Bool("d", false, "Decrypt Mode: Attempt to decrypt the file with the key provided.")
 	addMode := flag.Bool("a", false, "Add Mode: Decrypt and append lines given as tail arguments to the file, then reencrypt with the key provided.")
-	readMode := flag.Bool("r", false, "Read Mode: Will read the file given before and after other operations.")
+	readMode := flag.Bool("r", false, "Read Mode: Will read the file given after other operations.")
 	flag.Parse()
 
 	if *filePath != "" {
@@ -27,41 +27,49 @@ func main() {
 		return
 	}
 
-	read(*filePath, "Read before:", *readMode)
 	switch {
 	case *encryptMode && !*decryptMode && !*addMode:
 		fmt.Println("Let's encrypt...")
-		err := encrypt(*filePath, *passPhrase)
-		if err != nil {
+		if err := encrypt(*filePath, *passPhrase); err != nil {
+			fmt.Println(err)
+		}
+		if err := read(*filePath, *readMode); err != nil {
 			fmt.Println(err)
 		}
 	case *decryptMode && !*encryptMode && !*addMode:
 		fmt.Println("Let's decrypt...")
-		err := decrypt(*filePath, *passPhrase)
-		if err != nil {
+		if err := decrypt(*filePath, *passPhrase); err != nil {
+			fmt.Println(err)
+		}
+		if err := read(*filePath, *readMode); err != nil {
 			fmt.Println(err)
 		}
 	case *addMode && !*encryptMode && !*decryptMode:
 		fmt.Println("Add Mode...")
-		err := add(*filePath, *passPhrase, flag.Args())
-		if err != nil {
+		if err := add(*filePath, *passPhrase, flag.Args()); err != nil {
+			fmt.Println(err)
+		}
+		if err := read(*filePath, *readMode); err != nil {
 			fmt.Println(err)
 		}
 	default:
-		fmt.Println("Please add a single job flag (-e, -d or -a). See help -h for more info.")
+		if *readMode {
+			if err := read(*filePath, *readMode); err != nil {
+				fmt.Println(err)
+			}
+		} else {
+			fmt.Println("Please add a single job flag (-e, -d or -a). -h for more info.")
+		}
 	}
-	read(*filePath, "Read after:", *readMode)
-
 }
 
-func read(file, location string, readMode bool) error {
+func read(file string, readMode bool) error {
 	if readMode {
 		data, err := os.ReadFile(file)
 		if err != nil {
 			return fmt.Errorf("Could not read this file: %w", err)
 		}
-		fmt.Println(location)
-		fmt.Printf("%s\n", data)
+		fmt.Printf("File contents...\n---\n%s\n", data)
 	}
 	return nil
 }
