@@ -64,6 +64,7 @@ Args will be ignored in other modes.
 - Use Read Mode or look at your file manually if you just want to see its current content.
 
 ## Improvements to make
+- Passkey entry in hidden variable not in command.
 - better messaging (job progress, man page etc.).
 - Modularise files/functions out of main.go
 - verbose/silent modes - To avoid printing sensitive data if necessary.
